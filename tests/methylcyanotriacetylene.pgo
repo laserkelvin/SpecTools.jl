@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Mixture Units="MHz" Version="PGOPHER 10.1.182 04 Dec 2018 20:59  64 bit (fpc 3.3.1 x86_64-Linux)" PlotUnits="MHz" IntensityUnits="EinsteinA">
+  <Species Name="ch3c6cn">
+    <SymmetricMolecule Name="C1" Comment="ch3c6cn, JMS 192, 1 (1998)                              Mon Oct 12 19:54:24 2020" nNuclei="1" wt_A1_A2_="2" JAdjustSym="False" Jmax="600">
+      <SymmetricManifold Name="X" Initial="True">
+        <SymmetricTop Name="0">
+          <Parameter Name="B" Value="374.72127"/>
+          <Parameter Name="C" Value="157674.72127"/>
+          <Parameter Name="DJ" Value="1.61E-6"/>
+          <Parameter Name="DJK" Value="0.00138"/>
+          <symmetricTopNucleus Name="Nucleus1" Spin="2">
+            <Parameter Name="eQq" Value="-4.20000000000001"/>
+          </symmetricTopNucleus>
+        </SymmetricTop>
+      </SymmetricManifold>
+      <TransitionMoments Bra="X" Ket="X">
+        <SphericalTransitionMoment Comment="       1" Component="0" Bra="0" Ket="0">
+          <Parameter Name="Strength" Value="6"/>
+        </SphericalTransitionMoment>
+      </TransitionMoments>
+    </SymmetricMolecule>
+  </Species>
+  <Parameter Name="OThreshold" Value="1E-11"/>
+  <Parameter Name="Temperature" Value="5"/>
+  <Parameter Name="Fmax" Value="60000"/>
+  <FormSettings Name="ConstantsWindow" ActiveObject="Simulation: Simulation"/>
+</Mixture>
