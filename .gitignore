@@ -1,2 +1,4 @@
 
 *.bson
+.ipynb_checkpoints/
+.vscode
