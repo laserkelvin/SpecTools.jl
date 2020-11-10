@@ -81,6 +81,12 @@ function read_pgopher_catalog(filepath::String)
     end
 end
 
+"""
+Run command line PGopher to extract energy levels and the transition
+catalog. This assumes that the correct settings are provided in the .pgo
+file, for example that EinsteinA is desired, the temperature to simulate
+at, and all the other knick knacks.
+"""
 function run_pgopher(filepath::String, nproc::Integer=4)
     levels = run_pgopher_levels(filepath, nproc)
     # levels = select(levels, :energy => :e_low, :g)
