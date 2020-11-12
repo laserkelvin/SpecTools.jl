@@ -1,18 +1,5 @@
 
-using DataFrames, DelimitedFiles, BSON
-using BSON: @save, @load
-
-export
-    read_pgopher_catalog,
-    read_pgopher_levels,
-    PGopherLevels,
-    PGopher,
-    Q,
-    run_pgopher,
-    run_pgopher_catalog,
-    run_pgopher_levels,
-    @save,
-    @load
+using FileIO, ProgressMeter
 
 function read_pgopher_levels(filepath::String)
     # read in the whitespace delimited file, skip first two lines
@@ -95,46 +82,67 @@ function run_pgopher(filepath::String, nproc::Integer=4)
     return levels, catalog
 end
 
-struct PGopher <: Catalog
+function merge_pgopher_results(levels_df::DataFrame, catalog_df::DataFrame)
+    upper = select(levels_df, :energy => :e_up, :g => :g_up)
+    lower = select(levels_df, :energy => :e_low, :g => :g_low)
+    # merge dataframes to give every transition the necessary information
+    combined = innerjoin(catalog_df, lower, on = :e_low)
+    combined = innerjoin(combined, upper, on = :e_up)
+    return combined
+end
+
+function dataframes_to_objects(levels_df::DataFrame, combined_df::DataFrame)
+    transitions = Transitions()
+    # sort the levels dataframe in ascending energy
+    sort!(levels_df, [:energy])
+    # vectorized creation of EnergyLevels
+    levels = BaseLevel.(levels_df.energy, levels_df.g)
+    # now that all the level objects are created, we can link transitions
+    # to lookups for each level
+    p = Progress(size(combined_df)[1], 1, "Generating Transition objects...", 50)
+    for row in eachrow(combined_df)
+        next!(p)
+        # match the levels up
+        low_idx, up_idx = searchsortedfirst(levels_df.energy, row.e_low), searchsortedfirst(levels_df.energy, row.e_up)
+        push!(
+            transitions,
+            Transition(
+                row.ν,
+                0.,
+                row.intensity,
+                levels[low_idx], levels[up_idx],
+                row.Sij,
+                row.Aij
+            )
+            )
+    end
+    return levels, transitions
+end
+
+struct PGopher <: BaseCatalog
     transitions::Vector{<:Transition}
     levels::Vector{<:EnergyLevel}
     name::String
     hash::String
+end
 
-    """
-    Constructor method will take a name input, and the path to a .pgo
-    file to automatically create the energy levels and catalogs.
-    """
-    function PGopher(name::String, filepath::String, nproc::Integer=4)
-        levels_df, catalog_df = run_pgopher(filepath, nproc)
-        bson("$name.pgopher.bson", levels_df=levels_df, catalog_df=catalog_df)
-        hash = hash_file("$name.pgopher.bson")
-        upper = select(levels_df, :energy => :e_up, :g => :g_up)
-        lower = select(levels_df, :energy => :e_low, :g => :g_low)
-        # merge dataframes to give every transition the necessary information
-        combined = innerjoin(catalog_df, lower, on = :e_low)
-        combined = innerjoin(combined, upper, on = :e_up)
-        levels = Levels()
-        transitions = Transitions()
-        # create energy level objects
-        for row in eachrow(levels_df)
-            push!(levels, BaseLevel(row.energy, row.g))
-        end
-        for row in eachrow(combined)
-            lower_state = BaseLevel(row.e_low, row.g_low)
-            upper_state = BaseLevel(row.e_up, row.g_up)
-            push!(
-                transitions,
-                Transition(
-                    row.ν,
-                    0.,
-                    row.intensity,
-                    lower_state, upper_state,
-                    row.Sij,
-                    row.Aij
-                )
-                )
-        end
-        return new(transitions, levels, name, hash)
-    end
+"""
+Construct a `PGopher` object using a .pgo file, where we will calculate the
+energy levels and transitions 
+"""
+function PGopher(name::String, pgo_file::String, nproc::Integer=4)
+    levels_df, catalog_df = run_pgopher(pgo_file, nproc)
+    save("$name.pgopher.jld2", Dict("levels_df" => levels_df, "catalog_df" => catalog_df, "name" => name))
+    hash = hash_file("$name.pgopher.jld2")
+    combined = merge_pgopher_results(levels_df, catalog_df)
+    levels, transitions = dataframes_to_objects(levels_df, combined)
+    return PGopher(transitions, levels, name, hash)
+end
+
+function PGopher(bson_file::String)
+    data_dict = load(bson_file)
+    hash = hash_file(bson_file)
+    combined = merge_pgopher_results(data_dict["levels_df"], data_dict["catalog_df"]) 
+    levels, transitions = dataframes_to_objects(data_dict["levels_df"], combined)
+    return PGopher(transitions, levels, data_dict["name"], hash)
 end

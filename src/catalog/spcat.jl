@@ -1,5 +1,5 @@
 
-struct Pickett <: Catalog
+struct Pickett <: BaseCatalog
     transitions::Vector{<:Transition}
     name::String
     hash::String
