@@ -4,5 +4,18 @@ authors = ["Kelvin Lee <kin.long.kelvin.lee@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+GaussianProcesses = "891a1506-143c-57d2-908e-e1f8e92e6de9"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+MultivariateStats = "6f286f6a-111f-5878-ab1e-185364afe411"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+Peaks = "18e31ff7-3703-566c-8e60-38913d67486b"
+PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
