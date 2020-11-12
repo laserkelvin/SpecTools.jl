@@ -16,6 +16,20 @@ function read_pgopher_levels(filepath::String)
 end
 
 """
+This function neatly parses the PGopher output from a CSV file.
+This needs to be manually run, as it seems like there is no straight
+forward way of doing this by command line.
+"""
+function read_pgopher_csv(filepath::String) 
+    dataframe = DataFrame(CSV.File(filepath, skipto=2)[1:end-2])
+    # rename and select specific columns
+    return select(
+        dataframe,
+        :Position=>:ν, :Intensity=>:intensity, :Eupper=>:e_up, :Elower=>:e_low, :Spol=>:Sij, :A=>:Aij
+    )
+end
+
+"""
 Function that calls the command line PGopher to calculate the
 energy levels.
 """
@@ -33,9 +47,11 @@ end
 
 function run_pgopher_catalog(filepath::String, nproc::Integer=4)
     contents = read(`pgo --np $nproc $filepath`, String)
-    lines = split(contents, "\n")[2:end-2]
+    lines = split(contents, "\n")[5:end-2]
+    # ignore all of the preamble
+    mask = .!startswith.(lines, " ")
     results = []
-    for line in lines
+    for line in lines[mask]
         if occursin(r"[A-Z]\d\sX", line)
             split_line = split(line)
             indices = [10, 11, 12, 13, 14, 15]
@@ -123,7 +139,6 @@ struct PGopher <: BaseCatalog
     transitions::Vector{<:Transition}
     levels::Vector{<:EnergyLevel}
     name::String
-    hash::String
 end
 
 """
@@ -133,16 +148,23 @@ energy levels and transitions
 function PGopher(name::String, pgo_file::String, nproc::Integer=4)
     levels_df, catalog_df = run_pgopher(pgo_file, nproc)
     save("$name.pgopher.jld2", Dict("levels_df" => levels_df, "catalog_df" => catalog_df, "name" => name))
-    hash = hash_file("$name.pgopher.jld2")
     combined = merge_pgopher_results(levels_df, catalog_df)
     levels, transitions = dataframes_to_objects(levels_df, combined)
-    return PGopher(transitions, levels, name, hash)
+    return PGopher(transitions, levels, name)
 end
 
 function PGopher(bson_file::String)
     data_dict = load(bson_file)
-    hash = hash_file(bson_file)
     combined = merge_pgopher_results(data_dict["levels_df"], data_dict["catalog_df"]) 
     levels, transitions = dataframes_to_objects(data_dict["levels_df"], combined)
-    return PGopher(transitions, levels, data_dict["name"], hash)
+    return PGopher(transitions, levels, data_dict["name"])
+end
+
+function PGopher(name::String, pgo_file::String, catalog_csv::String, nproc::Integer=4)
+    levels_df = run_pgopher_levels(pgo_file, nproc)
+    catalog_df = read_pgopher_csv(catalog_csv)
+    save("$name.pgopher.jld2", Dict("levels_df" => levels_df, "catalog_df" => catalog_df, "name" => name))
+    combined = merge_pgopher_results(levels_df, catalog_df)
+    levels, transitions = dataframes_to_objects(levels_df, combined)
+    return PGopher(transitions, levels, name)
 end

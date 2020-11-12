@@ -6,19 +6,6 @@ This module defines all of the core abstraction for spectroscopy;
 from energy levels to spectra.
 """
 
-export
-    EnergyLevel,
-    LinearLevel,
-    SymTopLevel,
-    AsymTopLevel,
-    Levels,
-    E, g, J, K, Ka, Kc,
-    Transition,
-    Spectrum,
-    Experiment,
-    StickSpectrum,
-    hash_file
-
 abstract type EnergyLevel end
 
 struct BaseLevel <: EnergyLevel
@@ -65,6 +52,8 @@ AsymTopLevel(energy::AbstractFloat) = AsymTopLevel(energy, 1, 1, 1, 1, 1)
 # An array of energy levels
 Levels = Vector{EnergyLevel}
 
+match_energy(level::EnergyLevel, energy::AbstractFloat) = E(level) == energy
+
 # helper functions to grab fields
 E(state::EnergyLevel) = state.energy
 g(state::EnergyLevel) = state.g
@@ -94,13 +83,7 @@ abstract type Spectrum end
 mutable struct Experiment <: Spectrum
     ν::Vector{<:AbstractFloat}
     intensity::Vector{<:AbstractFloat}
-    noise::Vector{<:AbstractFloat}
-    hash::String
-end
-
-mutable struct StickSpectrum <: Spectrum
-    ν::Vector{<:AbstractFloat}
-    intensity::Vector{<:AbstractFloat}
+    noise::Union{Any, Vector{<:AbstractFloat}}
     hash::String
 end
 

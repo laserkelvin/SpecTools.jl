@@ -1,7 +1,7 @@
 
 module Catalog
 
-using DataFrames, DelimitedFiles, BSON
+using CSV, DataFrames, DelimitedFiles, BSON
 using ..SpecTools
 
 
@@ -45,7 +45,9 @@ export
     Q,
     run_pgopher,
     run_pgopher_catalog,
-    run_pgopher_levels
+    run_pgopher_levels,
+    read_pgopher_csv,
+    merge_pgopher_results
 
 include("pgopher.jl")
 
