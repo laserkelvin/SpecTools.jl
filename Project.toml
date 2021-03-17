@@ -3,11 +3,16 @@ uuid = "6c322a0d-46e9-4575-a44b-1e5c7962c4aa"
 authors = ["Kelvin Lee <kin.long.kelvin.lee@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
 [compat]
 julia = "1.4"
 
 [extras]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "BenchmarkTools"]
