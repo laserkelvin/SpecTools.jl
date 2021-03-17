@@ -17,10 +17,12 @@ struct LinearLevel <: EnergyLevel
     J::Integer
     F::Integer
     
-    LinearLevel() = new()
+    # constructor method 
+    function LinearLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, F::Integer=0)
+      @assert g > 0
+      return new(energy, g, J, F)
+    end
 end
-
-LinearLevel(energy::AbstractFloat) = LinearLevel(energy, 1, 1, 1)
 
 struct SymTopLevel <: EnergyLevel
     energy::AbstractFloat
@@ -29,10 +31,14 @@ struct SymTopLevel <: EnergyLevel
     K::Integer
     F::Integer
     
-    SymTopLevel() = new()
+    # constructor method 
+    function SymTopLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, K::Integer=0, F::Integer=0)
+      @assert g > 0
+      # angular momentum projection must always sum up to the total
+      @assert J >= K
+      return new(energy, g, J, K, F)
+    end
 end
-
-SymTopLevel(energy::AbstractFloat) = SymTopLevel(energy, 1, 1, 1, 1)
 
 struct AsymTopLevel <: EnergyLevel
     energy::AbstractFloat
@@ -42,26 +48,20 @@ struct AsymTopLevel <: EnergyLevel
     Kc::Integer
     F::Integer
     
-    AsymTopLevel() = new()
+    # constructor method 
+    function AsymTopLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, Ka::Integer=0, Kc::Integer=0, F::Integer=0)
+      @assert g > 0
+      # angular momentum projection must always sum up to the total
+      @assert J >= (Ka + Kc)
+      return new(energy, g, J, Ka, Kc, F)
+    end
 end
-
-AsymTopLevel(energy::AbstractFloat) = AsymTopLevel(energy, 1, 1, 1, 1, 1)
 
 # An array of energy levels
 Levels = Vector{EnergyLevel}
 
-match_energy(level::EnergyLevel, energy::AbstractFloat) = E(level) == energy
-
-# helper functions to grab fields
-E(state::EnergyLevel) = state.energy
-g(state::EnergyLevel) = state.g
-J(state::EnergyLevel) = state.J
-K(state::SymTopLevel) = state.K
-Ka(state::AsymTopLevel) = state.Ka
-Kc(state::AsymTopLevel) = state.Kc
-
 # partition function for a given state
-Q(state::EnergyLevel, t::AbstractFloat) = exp(-E(state) / (k * t)) * g(state)
+Q(state::EnergyLevel, t::AbstractFloat) = exp(-state.E / (k * t)) * state.g
 
 struct Transition
     ν::AbstractFloat
