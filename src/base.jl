@@ -71,6 +71,10 @@ struct Transition
     upper::EnergyLevel
     Sij::AbstractFloat
     Aij::AbstractFloat
+
+    function Transition(ν::AbstractFloat, ν_unc::AbstractFloat=0., intensity::AbstractFloat=0., lower::EnergyLevel=LinearLevel(1.), upper::EnergyLevel=LinearLevel(2.), Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
+      new(ν, ν_unc, intensity, lower, upper, Sij, Aij)
+    end
 end
 
 Transitions = Vector{Transition}
