@@ -4,56 +4,48 @@ This module defines all of the core abstraction for spectroscopy;
 from energy levels to spectra.
 """
 
-abstract type EnergyLevel end
+abstract type EnergyLevel{T} end
 
-struct BaseLevel <: EnergyLevel
-    energy::AbstractFloat
-    g::Unsigned
+struct BaseLevel{T} <: EnergyLevel{T}
+    E::Float64
+    g::T
+
+    BaseLevel(E, g=1) = new{Unsigned}(E, g)
 end
 
-struct LinearLevel <: EnergyLevel
-    energy::AbstractFloat
-    g::Unsigned
-    J::Integer
-    F::Integer
-    
-    # constructor method 
-    function LinearLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, F::Integer=0)
-      @assert g > 0
-      return new(energy, g, J, F)
-    end
+struct LinearLevel{T} <: EnergyLevel{T}
+    E::Float64
+    g::T
+    J::T
+    F::T
+
+    LinearLevel(E, g=1, J=1, F=0) = new{Unsigned}(E, g, J, F)
 end
 
-struct SymTopLevel <: EnergyLevel
-    energy::AbstractFloat
-    g::Unsigned
-    J::Integer
-    K::Integer
-    F::Integer
+struct SymTopLevel{T} <: EnergyLevel{T}
+    E::Float64
+    g::T
+    J::T
+    K::T
+    F::T
     
-    # constructor method 
-    function SymTopLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, K::Integer=0, F::Integer=0)
-      @assert g > 0
-      # angular momentum projection must always sum up to the total
+    function SymTopLevel(E, g=1, J=1, K=1, F=0)
       @assert J >= K
-      return new(energy, g, J, K, F)
+      new{Unsigned}(E, g, J, K, F)
     end
 end
 
-struct AsymTopLevel <: EnergyLevel
-    energy::AbstractFloat
-    g::Unsigned
-    J::Integer
-    Ka::Integer
-    Kc::Integer
-    F::Integer
-    
-    # constructor method 
-    function AsymTopLevel(energy::AbstractFloat=0., g::Unsigned=1, J::Integer=0, Ka::Integer=0, Kc::Integer=0, F::Integer=0)
-      @assert g > 0
-      # angular momentum projection must always sum up to the total
-      @assert J >= (Ka + Kc)
-      return new(energy, g, J, Ka, Kc, F)
+struct AsymTopLevel{T} <: EnergyLevel{T}
+    E::Float64
+    g::T
+    J::T
+    Ka::T
+    Kc::T
+    F::T
+
+    function AsymTopLevel(E, g=1, J=1, Ka=1, Kc=1, F=0)
+      @assert J >= Ka + Kc
+      new{Unsigned}(E, g, J, Ka, Kc, F)
     end
 end
 
@@ -61,20 +53,25 @@ end
 Levels = Vector{EnergyLevel}
 
 # partition function for a given state
-Q(state::EnergyLevel, t::AbstractFloat) = exp(-state.E / (k * t)) * state.g
+Q(state::EnergyLevel, t::AbstractFloat) = exp(-state.E / (k_cm * t)) * state.g
 
-struct Transition
-    ν::AbstractFloat
-    ν_unc::AbstractFloat
-    intensity::AbstractFloat
-    lower::EnergyLevel
-    upper::EnergyLevel
-    Sij::AbstractFloat
-    Aij::AbstractFloat
+struct Transition{T}
+    ν::T
+    ν_unc::T
+    intensity::T
+    lower::Union{EnergyLevel, Nothing}
+    upper::Union{EnergyLevel, Nothing}
+    Sij::T
+    Aij::T
 
-    function Transition(ν::AbstractFloat, ν_unc::AbstractFloat=0., intensity::AbstractFloat=0., lower::EnergyLevel=LinearLevel(1.), upper::EnergyLevel=LinearLevel(2.), Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
-      new(ν, ν_unc, intensity, lower, upper, Sij, Aij)
+    function Transition(ν::AbstractFloat, ν_unc::AbstractFloat=0., intensity::AbstractFloat=0., lower::EnergyLevel=nothing, upper::EnergyLevel=nothing, Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
+      new{Float64}(ν, ν_unc, intensity, lower, upper, Sij, Aij)
     end
+end
+
+function Transition(lower::EnergyLevel, upper::EnergyLevel, intensity::AbstractFloat=0., Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
+  ν = upper.energy - lower.energy
+  return Transition(ν, 0., intensity, lower, upper, Sij, Aij)
 end
 
 Transitions = Vector{Transition}
@@ -83,12 +80,18 @@ Transitions = Vector{Transition}
 Next level of abstraction
 """
 
-abstract type AbstractSpectrum end
+abstract type AbstractSpectrum{T} end
 
-struct Experiment <: AbstractSpectrum
-    ν::Vector{<:AbstractFloat}
-    intensity::Vector{<:AbstractFloat}
-    noise::Union{Any, Vector{<:AbstractFloat}, Nothing}
+struct Experiment{T} <: AbstractSpectrum{T}
+    ν::Vector{<:T}
+    intensity::Vector{<:T}
+    noise::Union{Vector{<:T}, T, Nothing}
+end
+
+struct Simulation{T} <: AbstractSpectrum{T}
+  ν::Vector{<:T}
+  intensity::Vector{<:T}
+  transitions::Transitions
 end
 
 # this is used to generate unique hashes to identify catalogs
