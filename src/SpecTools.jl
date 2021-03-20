@@ -5,11 +5,20 @@ using SHA, PhysicalConstants
 # Write your package code here.
 
 include("base.jl")
+include("constants.jl")
+include("lineshapes.jl")
 
 export EnergyLevel,
   BaseLevel,
   LinearLevel,
   SymTopLevel,
-  AsymTopLevel
+  AsymTopLevel,
+  Q,
+  Experiment,
+  Simulation
+
+export Gaussian,
+  simulate_lineshape,
+  simulate_lineshape!
 
 end
