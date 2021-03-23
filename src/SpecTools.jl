@@ -19,6 +19,6 @@ export EnergyLevel,
 
 export Gaussian,
        Lorentzian,
-       simulate_lineshape,
+       simulate_lineshape
 
 end
