@@ -20,8 +20,17 @@ end
 
 struct Lorentzian{T} <: Lineshape{T}
   μ::T
-  ν::T
+  fwhm::T
   A::T
+end
+
+# constructor method from an array
+function Lorentzian(p::Array{<:Float64,2})
+  return Lorentzian.(p[:,1], p[:,2], p[:,3])
+end
+
+function simulate_lineshape(x::AbstractFloat, l::Lorentzian)
+    return (l.A / π) * (l.fwhm / (x - l.μ)^2 + l.fwhm^2)
 end
 
 """
