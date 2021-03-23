@@ -6,7 +6,6 @@ using SHA, PhysicalConstants
 
 include("base.jl")
 include("constants.jl")
-include("lineshapes.jl")
 
 export EnergyLevel,
   BaseLevel,
@@ -17,9 +16,14 @@ export EnergyLevel,
   Experiment,
   Simulation
 
+include("lineshapes.jl")
+
 export Gaussian,
        Lorentzian,
        Lineshape,
        simulate_lineshape
+
+include("signal.jl")
+include("simulation.jl")
 
 end
