@@ -52,8 +52,6 @@ end
 # An array of energy levels
 Levels = Vector{EnergyLevel}
 
-# partition function for a given state
-Q(state::EnergyLevel, t::AbstractFloat) = exp(-state.E / (k_cm * t)) * state.g
 
 struct Transition{T}
     ν::T
