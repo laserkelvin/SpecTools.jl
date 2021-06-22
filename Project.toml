@@ -4,6 +4,7 @@ authors = ["Kelvin Lee <kin.long.kelvin.lee@gmail.com> and contributors"]
 version = "0.1.0"
 
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 

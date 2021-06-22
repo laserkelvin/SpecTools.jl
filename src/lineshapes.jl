@@ -15,7 +15,8 @@ end
 
 # general expression for a Gaussian
 function simulate_lineshape(x::AbstractFloat, g::Gaussian)
-  return (g.A / (2 * π * g.σ^2)) * exp(-(x - g.μ)^2 / (2 * g.σ^2))
+    abs(x - g.μ) > 20 * g.σ && return 0.
+    return (g.A / (2 * π * g.σ^2)) * exp(-(x - g.μ)^2 / (2 * g.σ^2))
 end
 
 struct Lorentzian{T} <: Lineshape{T}
@@ -41,6 +42,7 @@ function (lineshape::Lineshape)(x)
   simulate_lineshape(x, lineshape)
 end
 
+
 function (lineshapes::Vector{<:Lineshape})(x)
   y = 0.
   for lineshape in lineshapes
@@ -50,4 +52,6 @@ function (lineshapes::Vector{<:Lineshape})(x)
 end
 
 
+Gaussian(t::Transition, width::Real) = Gaussian(t.ν, width, t.intensity)
 
+Lorentzian(t::Transition, width::Real) = Lorentzian(t.ν, width, t.intensity)

@@ -6,63 +6,73 @@ from energy levels to spectra.
 
 abstract type EnergyLevel{T} end
 
-struct BaseLevel{T} <: EnergyLevel{T}
-    E::Float64
-    g::T
+struct BaseLevel{T<:Real, R<:Integer} <: EnergyLevel{T}
+    E::T
+    g::R
 
-    BaseLevel(E, g=1) = new{Unsigned}(E, g)
+    BaseLevel(E, g=1) = new{Float64, Int64}(E, g)
 end
 
-struct LinearLevel{T} <: EnergyLevel{T}
-    E::Float64
-    g::T
-    J::T
-    F::T
+"""
+Struct for an energy level of a linear molecule
 
-    LinearLevel(E, g=1, J=1, F=0) = new{Unsigned}(E, g, J, F)
+"""
+struct LinearLevel{T<:Real, R<:Integer} <: EnergyLevel{T}
+    E::T
+    g::R
+    J::R
+    F::R
+
+    LinearLevel(E, g=1, J=1, F=0) = new{Float64, Int64}(E, g, J, F)
 end
 
-struct SymTopLevel{T} <: EnergyLevel{T}
-    E::Float64
-    g::T
-    J::T
-    K::T
-    F::T
+struct SymTopLevel{T<:Real, R<:Integer} <: EnergyLevel{T}
+    E::T
+    g::R
+    J::R
+    K::R
+    F::R
     
     function SymTopLevel(E, g=1, J=1, K=1, F=0)
       @assert J >= K
-      new{Unsigned}(E, g, J, K, F)
+      new{Float64, Int64}(E, g, J, K, F)
     end
 end
 
-struct AsymTopLevel{T} <: EnergyLevel{T}
-    E::Float64
-    g::T
-    J::T
-    Ka::T
-    Kc::T
-    F::T
+struct AsymTopLevel{T<:Real, R<:Integer} <: EnergyLevel{T}
+    E::T
+    g::R
+    J::R
+    Ka::R
+    Kc::R
+    F::R
 
     function AsymTopLevel(E, g=1, J=1, Ka=1, Kc=1, F=0)
       @assert J >= Ka + Kc
-      new{Unsigned}(E, g, J, Ka, Kc, F)
+      new{Float64, Int64}(E, g, J, Ka, Kc, F)
     end
 end
 
 # An array of energy levels
-Levels = Vector{EnergyLevel}
+Levels = Vector{<:EnergyLevel}
+
+# partition function terms
+Q(E::Real, g::Real, T::Real) = g * exp(-E / (k_mhz * T))
+Q(level::EnergyLevel, T::Real) = Q(level.E, level.g, T)
+Q(levels::Levels, T::Real) = map(x -> Q(x.E, x.g, T), levels)
+sumQ(levels::Levels, T::Real) = reduce(+, Q(levels, T))
 
 
 struct Transition{T}
     ν::T
     ν_unc::T
     intensity::T
-    lower::Union{EnergyLevel, Nothing}
-    upper::Union{EnergyLevel, Nothing}
+    lower::Union{EnergyLevel, Missing}
+    upper::Union{EnergyLevel, Missing}
     Sij::T
     Aij::T
 
-    function Transition(ν::AbstractFloat, ν_unc::AbstractFloat=0., intensity::AbstractFloat=0., lower::EnergyLevel=nothing, upper::EnergyLevel=nothing, Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
+    function Transition(ν::AbstractFloat, ν_unc::AbstractFloat=0., intensity::AbstractFloat=0., lower::Union{EnergyLevel, Missing}=missing, upper::Union{EnergyLevel, Missing}=missing, Sij::AbstractFloat=0., Aij::AbstractFloat=0.)
       new{Float64}(ν, ν_unc, intensity, lower, upper, Sij, Aij)
     end
 end

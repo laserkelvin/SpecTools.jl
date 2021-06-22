@@ -12,9 +12,13 @@ export EnergyLevel,
   LinearLevel,
   SymTopLevel,
   AsymTopLevel,
+  Levels,
   Q,
+  sumQ,
   Experiment,
-  Simulation
+  Simulation,
+  Transition,
+  Transitions
 
 include("lineshapes.jl")
 
@@ -25,5 +29,9 @@ export Gaussian,
 
 include("signal.jl")
 include("simulation.jl")
+
+include("utils.jl")
+
+export make_linear_molecule
 
 end
