@@ -22,10 +22,9 @@ export EnergyLevel,
 
 include("lineshapes.jl")
 
-export Gaussian,
-       Lorentzian,
-       Lineshape,
-       simulate_lineshape
+export MultiGaussian,
+  Gaussian,
+  simulate_lineshape
 
 include("signal.jl")
 include("simulation.jl")
