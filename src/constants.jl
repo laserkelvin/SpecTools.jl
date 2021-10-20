@@ -15,4 +15,4 @@ export
     k_cm,
     MHz2wavenumber
 
-MHz2wavenumber(ν::AbstractFloat) = ν / (c_0.val / 1e4)
+MHz2wavenumber(ν) = ν / (c_0.val / 1e4)
