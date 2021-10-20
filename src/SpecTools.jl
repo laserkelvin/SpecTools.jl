@@ -20,6 +20,8 @@ export EnergyLevel,
   Transition,
   Transitions
 
+using Tullio
+
 include("lineshapes.jl")
 
 export MultiGaussian,
