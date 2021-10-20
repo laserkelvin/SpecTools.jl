@@ -8,5 +8,5 @@ using Test
 end
 
 @testset "Lineshapes" begin
-  @test Gaussian(0., 1., 1.)(0.5) ≈ 0.14045374430
+  @test Gaussian(1., 0., 0.5)(0.5) ≈ 0.48394144903
 end
