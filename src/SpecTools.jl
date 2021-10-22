@@ -1,5 +1,6 @@
 module SpecTools
 
+using Parameters, Distributions
 using SHA, PhysicalConstants, MetaGraphs
 
 # Write your package code here.
