@@ -65,6 +65,7 @@ a tuple of a single, promoted type.
 """
 features(l::Level) = promote([l.e, l.g, l.encoding...]...)
 features(t::Transition) = promote([t.ν, t.I, t.encoding...]...)
+
 """Function that converts a collection of spectroscopic types
 into a contiguous matrix of promoted types, with the intention
 of doing some kind of computation on them.
