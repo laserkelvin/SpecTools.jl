@@ -1,7 +1,9 @@
 
 # partition function terms
-Q(E, g, T) = g * exp(-E / (k_mhz * T))
-#Q(level::EnergyLevel, T::Real) = Q(level.E, level.g, T)
-#Q(levels::Levels, T::Real) = map(x -> Q(x.E, x.g, T), levels)
-#sumQ(levels::Levels, T::Real) = reduce(+, Q(levels, T))
-#
+partition_function(E, g, T) = g * exp(-E / (k_mhz * T))
+
+# evaluate the partition function based on levels
+function partition_function(ls::Levels, temperature)
+  @tullio q := partition_function(ls[i].e, ls[i].g, temperature)
+end
+

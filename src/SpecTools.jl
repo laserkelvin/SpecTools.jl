@@ -40,6 +40,8 @@ export MultiGaussian,
 include("signal.jl")
 include("partition_function.jl")
 
+export partition_function
+
 include("utils.jl")
 
 end
