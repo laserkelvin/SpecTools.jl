@@ -1,24 +1,32 @@
 module SpecTools
 
-using SHA, PhysicalConstants
+using SHA, PhysicalConstants, MetaGraphs
 
 # Write your package code here.
 
-include("base.jl")
 include("constants.jl")
+include("types.jl")
+include("graphs.jl")
 
-export EnergyLevel,
-  BaseLevel,
-  LinearLevel,
-  SymTopLevel,
-  AsymTopLevel,
-  Levels,
-  Q,
-  sumQ,
-  Experiment,
-  Simulation,
+export Level,
   Transition,
-  Transitions
+  Levels,
+  Transitions,
+  e,
+  g,
+  ν,
+  I,
+  quantum_numbers,
+  features,
+  match_encoding,
+  make_linear_transitions,
+  upper_state_qnos,
+  lower_state_qnos
+
+export BipartiteSG,
+  ProjectedSG,
+  offset,
+  indices
 
 using Tullio
 
@@ -29,10 +37,8 @@ export MultiGaussian,
   simulate_lineshape
 
 include("signal.jl")
-include("simulation.jl")
+include("partition_function.jl")
 
 include("utils.jl")
-
-export make_linear_molecule
 
 end
