@@ -7,6 +7,8 @@ using SHA
 using PhysicalConstants
 using MetaGraphs
 using Tullio
+using CSV
+using StructArrays
 
 # Write your package code here.
 
@@ -33,5 +35,9 @@ export partition_function, read_qpart, InterpPartitionFunction
 include("preprocess.jl")
 
 export search_frequency, intersect_frequencies
+
+include("parsers.jl")
+
+export read_pgopher_linelist
 
 end
