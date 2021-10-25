@@ -81,7 +81,7 @@ intensity(t::Transition, z::Real) = t.I / z
 This is generally for testing purposes than for actual use.
 """
 function make_linear_levels(n)
-	e = rand(Uniform(0f0, 1f5), n)
+  e = [100f0 * i * (i + 1) for i ∈ 0:n-1]
 	sort!(e)
 	j = [[i, 0] for i ∈ 0:n-1]
 	g = [2 * i + 1 for i ∈ 0:n-1]
