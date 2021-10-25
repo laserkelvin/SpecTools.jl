@@ -2,9 +2,12 @@
 # partition function terms
 partition_function(E, g, T) = g * exp(-E / (k_mhz * T))
 
+partition_function(l::Level, temperature) = partition_function(l.E, l.g, T)
+
 # evaluate the partition function based on levels
 function partition_function(ls::Levels, temperature)
-  @tullio q := partition_function(ls[i].e, ls[i].g, temperature)
+  @tullio q[i] := partition_function(ls[i].e, ls[i].g, temperature)
+  return q, sum(q)
 end
 
 
