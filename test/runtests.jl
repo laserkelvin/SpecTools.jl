@@ -25,7 +25,12 @@ end
   @test Gaussian(1., 0., 0.5)(0.5) ≈ 0.48394144903
 end
 
-@testset "Partition functions" begin
+@testset "Partition structs" begin
   interp_obj = read_qpart("test.qpart")
   @test interp_obj isa SpecTools.InterpPartitionFunction
 end
+
+@testset "Partition function computation" begin
+  @test partition_function(10_000, 1, 300f0) == 0.9984015312231446
+end
+
