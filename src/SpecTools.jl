@@ -40,7 +40,9 @@ export MultiGaussian,
 include("signal.jl")
 include("partition_function.jl")
 
-export partition_function
+export partition_function,
+  read_qpart,
+  InterpPartitionFunction
 
 include("utils.jl")
 
