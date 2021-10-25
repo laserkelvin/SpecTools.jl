@@ -37,4 +37,5 @@ end
 
 @testset "Read PGopher" begin
   @test ~isempty(read_pgopher_linelist("test.csv"))
+  @test ~isempty(read_pgopher_levels("test_levels.out"))
 end

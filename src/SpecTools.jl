@@ -38,6 +38,6 @@ export search_frequency, intersect_frequencies
 
 include("parsers.jl")
 
-export read_pgopher_linelist
+export read_pgopher_linelist, read_pgopher_levels
 
 end
