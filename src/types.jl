@@ -35,6 +35,8 @@ and upper state quantum numbers.
 	ν::T = 1f0
 	I::U = 1f0
 	encoding::Vector{S} = [0,1]
+    lower::Union{Nothing, Level} = nothing
+    upper::Union{Nothing, Level} = nothing
 end
 
 # Aliases for collections of either types
@@ -119,7 +121,7 @@ function make_linear_transitions(levels)
 		l, u = levels[i], levels[i+1]
 		ν = abs(e(l) - e(u))
 		encoding = vcat(l.encoding, u.encoding)
-		push!(transitions, Transition(ν=ν, encoding=encoding))
+		push!(transitions, Transition(ν=ν, encoding=encoding, lower=l, upper=u))
 	end
 	return transitions
 end
