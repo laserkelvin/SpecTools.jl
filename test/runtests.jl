@@ -12,6 +12,20 @@ using Test, Random
   @test upper_state_qnos(transitions[1]) == [1, 0]
 end
 
+@testset "Graph types" begin
+  levels = SpecTools.make_linear_levels(20)
+  transitions = SpecTools.make_linear_transitions(levels)
+  proj_graph = ProjectedSG(levels, transitions)
+  @test proj_graph isa SpecTools.ProjectedSG
+  bi_graph = BipartiteSG(levels, transitions)
+  @test bi_graph isa SpecTools.BipartiteSG
+end
+
 @testset "Lineshapes" begin
   @test Gaussian(1., 0., 0.5)(0.5) ≈ 0.48394144903
+end
+
+@testset "Partition functions" begin
+  interp_obj = read_qpart("test.qpart")
+  @test interp_obj isa SpecTools.InterpPartitionFunction
 end
