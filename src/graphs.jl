@@ -34,7 +34,7 @@ function ProjectedSG(ls, ts)
 	for t ∈ ts
         properties = Dict(:I => t.I, :ν => t.ν)
 		lq, uq = lower_state_qnos(t), upper_state_qnos(t)
-		l_index, u_index = match_level(ls, lq), match_level(ls, uq)
+		l_index, u_index = match_encoding(ls, lq), match_encoding(ls, uq)
         MetaGraphs.add_edge!(sg, l_index, u_index, properties)
 	end
 	return ProjectedSG(ls, ts, sg)	
@@ -47,7 +47,7 @@ function BipartiteSG(ls, ts)
         # get the transition strength and frequency, potentially for plotting
         properties = Dict(:I => t.I, :ν => t.ν)
 		lq, uq = lower_state_qnos(t), upper_state_qnos(t)
-		l_index, u_index = match_level(ls, lq), match_level(ls, uq)
+		l_index, u_index = match_encoding(ls, lq), match_encoding(ls, uq)
 		for index in [l_index, u_index]
           MetaGraphs.add_edge!(sg, t_offset, index, properties)
 		end
