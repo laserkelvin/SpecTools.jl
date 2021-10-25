@@ -1,6 +1,6 @@
 module SpecTools
 
-using Parameters, Distributions
+using Parameters, Distributions, Interpolations
 using SHA, PhysicalConstants, MetaGraphs
 
 # Write your package code here.
