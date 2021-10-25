@@ -16,9 +16,9 @@ readable names. The `quantum_numbers` function provides
 an interface to obtain this.
 """
 @with_kw struct Level{T,U,S}
-	e::T = 1f0
-	g::U = 1
-	encoding::Vector{S} = [0]
+  e::T = 1f0
+  g::U = 1
+  encoding::Vector{S} = [0]
 end
 
 """Concrete type for a transition object. The three fields
@@ -32,11 +32,11 @@ contain an even number of elements corresponding to lower
 and upper state quantum numbers.
 """
 @with_kw struct Transition{T,U,S}
-	ν::T = 1f0
-	I::U = 1f0
-	encoding::Vector{S} = [0,1]
-    lower::Union{Nothing, Level} = nothing
-    upper::Union{Nothing, Level} = nothing
+  ν::T = 1f0
+  I::U = 1f0
+  encoding::Vector{S} = [0,1]
+  lower::Union{Nothing, Level} = nothing
+  upper::Union{Nothing, Level} = nothing
 end
 
 # Aliases for collections of either types
@@ -51,15 +51,15 @@ I(t::Transition) = t.I
 
 # Generate a mapping between string quantum numbers and their value
 function quantum_numbers(l::Level, names...)
-	return Dict(Symbol(name) => value for (name, value) in zip(names, l.encoding))
+  return Dict(Symbol(name) => value for (name, value) in zip(names, l.encoding))
 end
 
 function quantum_numbers(t::Transition, names...)
-	encoding = Dict()
-	for (name, l, u) in zip(names, lower_state_qnos(t), upper_state_qnos(t))
-		encoding = merge(encoding, Dict(Symbol("$name", "_l") => l, Symbol("$name", "_u") => u))
-	end
-	return encoding
+  encoding = Dict()
+  for (name, l, u) in zip(names, lower_state_qnos(t), upper_state_qnos(t))
+    encoding = merge(encoding, Dict(Symbol("$name", "_l") => l, Symbol("$name", "_u") => u))
+  end
+  return encoding
 end
 
 """Function that converts the fields in a `Level` object into
@@ -82,15 +82,14 @@ This is generally for testing purposes than for actual use.
 """
 function make_linear_levels(n)
   e = [100f0 * i * (i + 1) for i ∈ 0:n-1]
-	sort!(e)
-	j = [[i, 0] for i ∈ 0:n-1]
-	g = [2 * i + 1 for i ∈ 0:n-1]
-	levels = Levels()
-	sizehint!(levels, n)
-	for i ∈ eachindex(e,j,g)
-		push!(levels, Level(g=g[i], e=e[i], encoding=j[i]))
-	end
-	levels
+  j = [[i, 0] for i ∈ 0:n-1]
+  g = [2 * i + 1 for i ∈ 0:n-1]
+  levels = Levels()
+  sizehint!(levels, n)
+  for i ∈ eachindex(e,j,g)
+    push!(levels, Level(g=g[i], e=e[i], encoding=j[i]))
+  end
+  levels
 end
 
 """Find the index of an spectroscopic object from a vector
@@ -98,11 +97,11 @@ of objects that matches the encoding provided. In other words,
 match the quantum numbers.
 """
 function match_encoding(obj, enc)
-	@inbounds for i ∈ eachindex(obj)
-		if obj[i].encoding == enc
-			return i
-		end
-	end
+  @inbounds for i ∈ eachindex(obj)
+    if obj[i].encoding == enc
+  	  return i
+    end
+  end
 end
 
 """Function that processes an iterable of energy levels, and
@@ -115,24 +114,24 @@ A quick way to do this would be to pipe the output of
 `make_linear_levels` into this function.
 """
 function make_linear_transitions(levels)
-    transitions = Transitions()
-	sizehint!(transitions, length(levels))
-	for i ∈ 1:length(levels)-1
-		l, u = levels[i], levels[i+1]
-		ν = abs(e(l) - e(u))
-		encoding = vcat(l.encoding, u.encoding)
-		push!(transitions, Transition(ν=ν, encoding=encoding, lower=l, upper=u))
-	end
-	return transitions
+  transitions = Transitions()
+  sizehint!(transitions, length(levels))
+  for i ∈ 1:length(levels)-1
+    l, u = levels[i], levels[i+1]
+    ν = abs(e(l) - e(u))
+    encoding = vcat(l.encoding, u.encoding)
+    push!(transitions, Transition(ν=ν, encoding=encoding, lower=l, upper=u))
+  end
+  return transitions
 end
 
 function upper_state_qnos(t::Transition)
-	offset = length(t.encoding) ÷ 2
-	return t.encoding[offset+1:length(t.encoding)]
+  offset = length(t.encoding) ÷ 2
+  return t.encoding[offset+1:length(t.encoding)]
 end
 
 function lower_state_qnos(t::Transition)
-	offset = length(t.encoding) ÷ 2
-	return t.encoding[1:offset]
+  offset = length(t.encoding) ÷ 2
+  return t.encoding[1:offset]
 end
 
