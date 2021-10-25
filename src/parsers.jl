@@ -23,9 +23,7 @@ end
 """
 function read_pgopher_levels(filepath)
     open(filepath) do file
-        levels = []
         lines = readlines(file)[3:end-3]
-        sizehint!(levels, length(lines))
         return StructArray(parse_level_row.(lines))
     end
 end
