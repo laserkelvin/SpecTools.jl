@@ -135,3 +135,12 @@ function lower_state_qnos(t::Transition)
   return t.encoding[1:offset]
 end
 
+"""Type for storing spectral data in the form of
+frequency versus intensity arrays.
+"""
+@with_kw mutable struct Spectrum{T}
+  ν::Vector{T}
+  I::Vector{T}
+  noise::Union{T, Vector{T}} = 1f0
+end
+
