@@ -30,6 +30,8 @@ include("partition_function.jl")
 
 export partition_function, read_qpart, InterpPartitionFunction
 
-include("utils.jl")
+include("preprocess.jl")
+
+export search_frequency, intersect_frequencies
 
 end
