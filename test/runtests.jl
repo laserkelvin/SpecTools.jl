@@ -35,3 +35,6 @@ end
   @test partition_function(10_000, 1, 300f0) == 0.9984015312231446
 end
 
+@testset "Read PGopher" begin
+  @test ~isempty(read_pgopher_linelist("test.csv"))
+end
