@@ -34,20 +34,20 @@ the rest of the qpart file.
 function read_qpart(filepath)
   open(filepath) do file
     header = readline(file)
-    qpart_type = occursin("interp", header) ? Symbol(IsInterp) : throw(MethodError(header, " qpart format not recognized."))
+    qpart_type = occursin("interp", header) ? :IsInterp : throw(MethodError(header, " qpart format not recognized."))
+    read_qpart(file, Val(qpart_type))
   end
-  read_qpart(filepath, Val(qpart_type))
 end
 
 """Read in an interpolated partition function
 """
-function read_qpart(filepath, ::Val{:IsInterp})
-  open(filepath) do file
-    lines = readlines(file)
-    # ignore comment lines
-    data = filter(x->~startswith(lstrip(x), "#"), lines)
-    # split by whitespace, then reduce into a 2xN matrix and convert to numbers
-    values_matrix = mapreduce(split, hcat, data) .|> x -> parse(Float32, x)
-    return InterpPartitionFunction(values_matrix[1,:], values_matrix[2,:])
-  end
+function read_qpart(file, ::Val{:IsInterp})
+  lines = readlines(file)
+  # ignore comment lines
+  data = filter(x->~startswith(lstrip(x), "#"), lines)
+  # split by whitespace, then reduce into a 2xN matrix and convert to numbers
+  values_matrix = mapreduce(split, hcat, data) .|> x -> parse(Float32, x)
+  # sort the values in ascending order
+  sort!(values_matrix, dims=2)
+  return InterpPartitionFunction(values_matrix[1,:], values_matrix[2,:])
 end
