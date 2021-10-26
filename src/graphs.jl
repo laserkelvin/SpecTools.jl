@@ -5,6 +5,11 @@ to be developed.
 """
 abstract type SpectroscopicGraph end
 
+struct LevelsGraph <: SpectroscopicGraph
+	levels
+	graph
+end
+
 """A projected spectroscopic monograph, where nodes represent
 energy levels, and edges between nodes represent transitions
 that connect them.
@@ -53,4 +58,9 @@ function BipartiteSG(ls, ts)
 		end
 	end
 	return BipartiteSG(ls, ts, sg)
+end
+
+function LevelsGraph(ls)
+	sg = MetaGraph(length(ls))
+	return LevelsGraph(ls, sg)
 end
