@@ -89,7 +89,7 @@ function make_linear_levels(n)
   for i ∈ eachindex(e,j,g)
     push!(levels, Level(g=g[i], e=e[i], encoding=j[i]))
   end
-  levels
+  StructArray(levels)
 end
 
 """Find the index of an spectroscopic object from a vector
@@ -122,7 +122,7 @@ function make_linear_transitions(levels)
     encoding = vcat(l.encoding, u.encoding)
     push!(transitions, Transition(ν=ν, encoding=encoding, lower=l, upper=u))
   end
-  return transitions
+  return StructArray(transitions)
 end
 
 function upper_state_qnos(t::Transition)
