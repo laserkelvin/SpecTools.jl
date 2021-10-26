@@ -84,12 +84,7 @@ function make_linear_levels(n)
   e = [100f0 * i * (i + 1) for i ∈ 0:n-1]
   j = [[i, 0] for i ∈ 0:n-1]
   g = [2 * i + 1 for i ∈ 0:n-1]
-  levels = Levels()
-  sizehint!(levels, n)
-  for i ∈ eachindex(e,j,g)
-    push!(levels, Level(g=g[i], e=e[i], encoding=j[i]))
-  end
-  StructArray(levels)
+  StructArray([Level(g=g[i], e=e[i], encoding=j[i]) for i ∈ eachindex(e,j,g)])
 end
 
 """Find the index of an spectroscopic object from a vector
