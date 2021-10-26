@@ -20,8 +20,10 @@ export e, g, ν, I, quantum_numbers, features
 export match_encoding, make_linear_transitions, upper_state_qnos, lower_state_qnos
 
 include("graphs.jl")
+include("graph_analysis.jl")
 
-export BipartiteSG, ProjectedSG, offset, indices
+export LevelsGraph, BipartiteSG, ProjectedSG, offset, indices
+export link_nodes_by_Δ!
 
 include("lineshapes.jl")
 

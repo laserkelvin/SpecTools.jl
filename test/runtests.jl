@@ -1,4 +1,5 @@
 using SpecTools
+using Graphs
 using Test, Random
 
 @testset "Base types" begin
@@ -20,6 +21,8 @@ end
   @test proj_graph isa SpecTools.ProjectedSG
   bi_graph = BipartiteSG(levels, transitions)
   @test bi_graph isa SpecTools.BipartiteSG
+  levels_graph = LevelsGraph(levels)
+  @test levels_graph isa SpecTools.LevelsGraph
 end
 
 @testset "Lineshapes" begin
@@ -38,4 +41,11 @@ end
 @testset "Read PGopher" begin
   @test ~isempty(read_pgopher_linelist("test.csv"))
   @test ~isempty(read_pgopher_levels("test_levels.out"))
+end
+
+@testset "Graph analysis" begin
+  levels = SpecTools.make_linear_levels(20)
+  sg = LevelsGraph(levels)
+  link_nodes_by_Δ!(sg)
+  @test Graphs.ne(sg.graph) == 19
 end
