@@ -23,6 +23,7 @@ Interpolations = "0.13.4"
 MetaGraphs = "0.7"
 Parameters = "0.12.3"
 PhysicalConstants = "0.2.1"
+StructArrays = "0.6"
 Tullio = "0.3.2"
 julia = "1.6"
 
