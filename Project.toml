@@ -17,6 +17,7 @@ StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
+CSV = "0.9"
 Distributions = "0.25"
 Graphs = "1.4"
 Interpolations = "0.13.4"
